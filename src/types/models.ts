@@ -60,28 +60,3 @@ export interface JDD {
   Pan?: string;
   lastSiretisation?: string;
 }
-
-export interface TestCase {
-  name: string;
-  societeName: string;
-  formule: Formule;
-  isPro: boolean;
-  selectedOption?: Option | null;
-  selectedPromo?: Promo | null;
-  usePromo?: boolean;
-}
-
-export interface TestResult {
-  success: boolean;
-  testName: string;
-  societeName: string;
-  formuleName: string;
-  formuleCode: string;
-  isPro: boolean;
-  selectedOption?: string;
-  selectedPromo?: string;
-  usePromo: boolean;
-  error?: string;
-  duration?: number;
-  screenshotPath?: string;
-}
