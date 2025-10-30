@@ -23,12 +23,10 @@
     "dotenv": "^17.2.3",
     "eslint": "^9.36.0",
     "prettier": "^3.6.2",
-    "prisma": "^6.16.3",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.3",
     "better-sqlite3": "^12.4.1",
     "playwright": "^1.56.0"
   }
