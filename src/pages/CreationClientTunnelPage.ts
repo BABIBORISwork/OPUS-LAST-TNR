@@ -41,7 +41,6 @@ export class CreationClientTunnelPage {
     return this.page.getByRole('group', { name: 'Liste des promotions' });
   }
 
-  // Méthodes de navigation
   public async ouvrirCreationClient(): Promise<void> {
     logger.debug('Ouverture de la création de client');
     await RetryManager.executeWithRetry(
@@ -70,12 +69,10 @@ export class CreationClientTunnelPage {
     await RetryManager.executeWithRetry(
       async () => {
         await selectFromGridDropdown(this.page, this.listeSociete, nomSociete, 10000, 3);
-        // petite pause pour laisser l'UI recharger les formules
         await this.page.waitForTimeout(1000);
       },
       `Sélection société ${nomSociete}`
     );
-    // S'assurer que le panneau de sélection est bien fermé pour ne pas intercepter les clics suivants
     await ensureDropdownClosed(this.page, this.listeSociete);
     logger.info(`✅ Société sélectionnée: ${nomSociete}`);
   }
@@ -89,11 +86,9 @@ export class CreationClientTunnelPage {
 
     while (retryCount < maxRetries && !formuleFound) {
       try {
-        // Vérification que la formule est présente
         const radioButton = this.page.locator(`#${formule.RadioId.replace('_I_D', '')}`);
         await expect(radioButton).toContainText(formule.Nom, { ignoreCase: true, timeout: 5000 });
 
-        // Si on arrive ici, la formule a été trouvée
         formuleFound = true;
       } catch (error) {
         retryCount++;
@@ -105,15 +100,12 @@ export class CreationClientTunnelPage {
 
         logger.warn(`Tentative ${retryCount}/${maxRetries} échouée pour la formule '${formule.Nom}'. Retry de la sélection de société...`);
 
-        // Retry de la sélection de société
         await this.retrySelectionSociete(formule.Societe?.Nom || '');
 
-        // Attendre que la page se recharge
         await this.page.waitForTimeout(3000);
       }
     }
 
-    // Sélection de la formule (maintenant qu'on sait qu'elle existe)
     await this.page.locator(`#${formule.RadioId}`).click();
     logger.info(`✅ Formule sélectionnée: ${formule.Nom}`);
   }
@@ -127,10 +119,8 @@ export class CreationClientTunnelPage {
   public async selectionnerOption(option: Option): Promise<void> {
     logger.debug(`Sélection de l'option: ${option.Nom}`);
     
-    // Vérifier que la zone des options est visible
     await expect(this.zoneOptions).toBeVisible();
 
-    // Sélectionner l'option
     await this.page.locator(`#${option.RadioId}`).click();
     logger.info(`✅ Option sélectionnée: ${option.Nom}`);
   }
@@ -168,24 +158,19 @@ export class CreationClientTunnelPage {
   ): Promise<void> {
     logger.debug('Vérification de l\'URL de la popup');
     
-    // Attendre que la page soit chargée
     await popupPage.waitForLoadState('domcontentloaded');
 
-    // Construire l'URL attendue
     let expectedUrlBase = `https://site-ulys-ecommerce-trade-beta.azurewebsites.net/?code=${formule.Code}`;
 
-    // Ajouter l'option si présente
     if (formule.HasOptions && !selectedOptionCode) {
       expectedUrlBase += `&opt=${selectedOptionCode}`;
     }
 
-    // Ajouter le code promo si présent
     let expectedUrl = expectedUrlBase;
     if (usePromo && formule.HasPromos && selectedPromoCode) {
       expectedUrl += `&promo=${selectedPromoCode}`;
     }
 
-    // Attendre que l'URL se stabilise
     const maxWaitTime = config.timeoutMs;
     const checkInterval = 1000;
     let elapsed = 0;
@@ -198,7 +183,6 @@ export class CreationClientTunnelPage {
 
       currentUrl = popupPage.url();
 
-      // Vérifications
       const containsCode = currentUrl.includes(`code=${formule.Code}`);
       const containsOption = !formule.HasOptions ||
                            !selectedOptionCode ||
@@ -218,7 +202,6 @@ export class CreationClientTunnelPage {
       }
     }
 
-    // Dernière tentative : navigation directe si nécessaire
     if (!urlMatches) {
       await popupPage.goto(expectedUrl, { waitUntil: 'domcontentloaded' });
       await this.page.waitForTimeout(5000);
@@ -239,7 +222,6 @@ export class CreationClientTunnelPage {
       urlMatches = containsCode && containsOption && containsPromo;
     }
 
-    // Assertion finale
     if (!urlMatches) {
       throw new Error(`L'URL finale '${currentUrl}' devrait correspondre à l'URL attendue '${expectedUrl}'.`);
     }

@@ -5,7 +5,6 @@ export class MainPage {
   constructor(private readonly page: Page) {}
 
   async naviguerVersOpus(): Promise<void> {
-    // Aligné sur la navigation C#: baseUrl sans # puis clics
     const base = new URL(config.baseUrl);
     const baseUrl = `${base.origin}${base.pathname}`.replace(/#$/, '');
     await this.page.goto(baseUrl);

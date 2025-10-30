@@ -7,16 +7,13 @@ import { Formule } from '../types/models';
 import { getFormulesTestCasesSync } from '../utils/database';
 
 test.describe('Tunnel de création de client', () => {
-  // Données dynamiques depuis SQLite (synchrone) pour générer 1 test par donnée
   const testCases = getFormulesTestCasesSync();
 
-  // Test de vérification
   test('Vérification des cas de test', async () => {
     expect(testCases.length).toBeGreaterThan(0);
     logger.info(`✅ ${testCases.length} cas de test disponibles`);
   });
 
-  // Génération des tests individuels
   testCases.forEach((testCase, index) => {
     test(testCase.testName, async ({ browser }: { browser: Browser }) => {
       const startTime = Date.now();
@@ -26,7 +23,6 @@ test.describe('Tunnel de création de client', () => {
       const context = await browser.newContext();
       const page = await context.newPage();
       
-      // Configuration des timeouts
       page.setDefaultTimeout(config.timeoutMs);
       page.setDefaultNavigationTimeout(config.navigationTimeoutMs);
       
@@ -40,24 +36,18 @@ test.describe('Tunnel de création de client', () => {
         logger.info(`   Type: ${testCase.isPro ? 'Pro' : 'Particulier'}`);
         logger.info(`   Promo: ${testCase.usePromo ? 'Oui' : 'Non'}`);
 
-        // Navigation vers la page de base
         await mainPage.naviguerVersOpus();
 
-        // Ouverture de la création de client
         await tunnelPage.ouvrirCreationClient();
 
-        // Sélection du type (Entreprise si Pro)
         if (testCase.isPro) {
           await tunnelPage.selectionnerTypeEntreprise();
         }
 
-        // Sélection de la société
         await tunnelPage.selectionnerSociete(testCase.societeName);
 
-        // Sélection de la formule
         await tunnelPage.selectionnerFormule(testCase.formule);
 
-        // Gestion des options si la formule en a
         if (testCase.formule.HasOptions && testCase.formule.Options?.length) {
           const randomIndex = Math.floor(Math.random() * testCase.formule.Options.length);
           const selectedOption = testCase.formule.Options[randomIndex];
@@ -67,7 +57,6 @@ test.describe('Tunnel de création de client', () => {
           logger.info(`   Option sélectionnée: ${selectedOption.Nom} (${selectedOption.Code})`);
         }
 
-        // Gestion des codes promo si nécessaire
         if (testCase.usePromo && testCase.formule.HasPromos && testCase.formule.Promos?.length) {
           const randomIndex = Math.floor(Math.random() * testCase.formule.Promos.length);
           const selectedPromo = testCase.formule.Promos[randomIndex];

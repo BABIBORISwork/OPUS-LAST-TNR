@@ -439,24 +439,18 @@ export class CreationClientParticulierPage {
   public async remplirFormulaireClient(donnees: DonneesClientParticulier): Promise<void> {
     logger.debug('Remplissage du formulaire client');
     
-    // Sélectionner la qualité (seulement si ce n'est pas MADAME par défaut)
     if (donnees.qualite !== 'MADAME') {
       await RetryManager.executeWithRetry(
         async () => {
-          // Cliquer pour ouvrir la liste
           await this.champQualite.click();
           
-          // Attendre un petit délai pour que la liste s'ouvre
           await this.page.waitForTimeout(1000);
           
-          // Attendre que l'élément soit visible avant de cliquer
           const qualiteElement = this.page.getByRole('cell', { name: donnees.qualite, exact: true });
           await expect(qualiteElement).toBeVisible({ timeout: 10000 });
           
-          // Cliquer sur l'élément
           await qualiteElement.click();
           
-          // Attendre un petit délai pour que la sélection se fasse
           await this.page.waitForTimeout(500);
         },
         `Sélection qualité ${donnees.qualite}`
@@ -465,7 +459,6 @@ export class CreationClientParticulierPage {
       logger.debug('Qualité MADAME par défaut - pas de sélection nécessaire');
     }
 
-    // Remplir les champs obligatoires
     await RetryManager.executeWithRetry(
       async () => {
         await this.champNom.click();
@@ -498,7 +491,6 @@ export class CreationClientParticulierPage {
       `Saisie code postal ${donnees.codePostal}`
     );
 
-    // Cliquer sur le champ localité pour déclencher le remplissage automatique
     await RetryManager.executeWithRetry(
       async () => {
         await this.champLocalite.click();
@@ -506,7 +498,6 @@ export class CreationClientParticulierPage {
       'Clic sur champ localité pour déclencher le remplissage automatique'
     );
 
-    // Attendre que la localité soit automatiquement remplie
     await expect(this.champLocalite).toHaveValue(donnees.localite);
 
     await RetryManager.executeWithRetry(
@@ -516,23 +507,6 @@ export class CreationClientParticulierPage {
       },
       `Saisie téléphone ${donnees.telephone}`
     );
-
-    /*
-     * Interlocuteur VA désactivé temporairement sur demande.
-     * Ancienne logique conservée ci-dessous pour réactivation ultérieure.
-     *
-     * await RetryManager.executeWithRetry(
-     *   async () => {
-     *     await this.champInterlocuteurVA.click();
-     *     await this.page.waitForTimeout(1000);
-     *     const interlocuteurElement = this.page.getByRole('cell', { name: donnees.interlocuteurVA, exact: true });
-     *     await expect(interlocuteurElement).toBeVisible({ timeout: 10000 });
-     *     await interlocuteurElement.click();
-     *     await this.page.waitForTimeout(500);
-     *   },
-     *   `Sélection interlocuteur ${donnees.interlocuteurVA}`
-     * );
-     */
 
     await RetryManager.executeWithRetry(
       async () => {
@@ -574,7 +548,6 @@ export class CreationClientParticulierPage {
     await expect(this.page.locator('#portable')).toContainText(donnees.telephone);
     await expect(this.page.locator('#mailTxt')).toContainText(donnees.email);
     
-    // Vérifier que le numéro de client est généré
     await expect(this.page.locator('#texteFieldset')).toContainText('Client N°');
     
     logger.info('✅ Données du client vérifiées');
@@ -583,12 +556,10 @@ export class CreationClientParticulierPage {
   public async verifierHistorique(): Promise<void> {
     logger.debug('Vérification de l\'historique');
     
-    // Vérifier les éléments de l'historique
     await expect(this.page.getByRole('cell', { name: /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}$/ })).toBeVisible();
     await expect(this.page.getByRole('cell', { name: 'Evènement', exact: true })).toBeVisible();
     await expect(this.page.getByRole('cell', { name: 'Emetteur VINCI Autoroutes', exact: true })).toBeVisible();
     
-    // Vérifier l'événement de création (utiliser l'ID de la cellule pour éviter l'ambiguïté)
     await expect(this.page.locator('#gvHistorique_tccell0_4')).toBeVisible();
     
     logger.info('✅ Historique vérifié');
@@ -600,12 +571,10 @@ export class CreationClientParticulierPage {
     try {
       const numeroClientElement = this.page.locator('#texteFieldset');
       
-      // Attendre que l'élément soit présent (même s'il est hidden)
       await numeroClientElement.waitFor({ state: 'attached', timeout: 5000 });
       
       const texteComplet = await numeroClientElement.textContent();
       if (texteComplet) {
-        // Extraire le numéro de client du texte "Client N° XXXXXXX"
         const match = texteComplet.match(/Client N°\s*(\d+)/);
         if (match && match[1]) {
           const numeroClient = match[1];
@@ -626,16 +595,12 @@ export class CreationClientParticulierPage {
     logger.debug('Sauvegarde du client en base de données');
     
     try {
-      // Extraire le numéro de client
       const numeroClient = await this.extraireNumeroClient();
       
-      // Ouvrir la base de données en écriture
       const db = openDbForWrite();
       
-      // Créer la table si elle n'existe pas
       createClientsTable(db);
       
-      // Préparer les données pour la sauvegarde
       const clientData: ClientData = {
         email: donnees.email,
         qualite: donnees.qualite,
@@ -650,10 +615,8 @@ export class CreationClientParticulierPage {
         numeroClient: numeroClient
       };
       
-      // Sauvegarder en base
       saveClientData(db, clientData);
       
-      // Fermer la base de données
       closeDb(db);
       
       logger.info('✅ Client sauvegardé en base de données avec succès');
@@ -667,16 +630,12 @@ export class CreationClientParticulierPage {
     logger.debug('Génération d\'un email unique');
     
     try {
-      // Ouvrir la base de données en écriture
       const db = openDbForWrite();
       
-      // Créer la table si elle n'existe pas
       createClientsTable(db);
       
-      // Générer un email unique
       const emailUnique = generateUniqueEmail(db);
       
-      // Fermer la base de données
       closeDb(db);
       
       logger.info(`✅ Email unique généré: ${emailUnique}`);
