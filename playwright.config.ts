@@ -29,8 +29,8 @@ export default defineConfig({
     navigationTimeout: config.navigationTimeoutMs,
     actionTimeout: config.timeoutMs,
     screenshot: 'only-on-failure',
-    trace: 'on-first-retry',
-    video: 'on-first-retry',
+    trace: 'retain-on-failure',
+    video: 'retain-on-failure',
     outputDir: 'test-results'
   },
   globalTeardown: './src/global-teardown.ts',
