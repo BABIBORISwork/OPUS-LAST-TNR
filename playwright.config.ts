@@ -8,6 +8,19 @@ export default defineConfig({
     '**/*.test.ts',
     '**/*.tspec.ts'
   ],
+  timeout: config.timeoutMs * 2,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+    ['junit', { outputFile: 'reports/junit/results.xml' }]
+  ],
+  projects: [
+    { name: 'chromium', use: { browserName: 'chromium' } },
+    { name: 'firefox', use: { browserName: 'firefox' } },
+    { name: 'webkit', use: { browserName: 'webkit' } }
+  ],
   use: {
     baseURL: config.baseUrl,
     headless: config.headless,
@@ -15,10 +28,10 @@ export default defineConfig({
     navigationTimeout: config.timeoutMs,
     actionTimeout: config.timeoutMs,
     screenshot: 'only-on-failure',
-    trace: 'on'
+    trace: 'on-first-retry',
+    video: 'on-first-retry',
+    outputDir: 'test-results'
   },
-  timeout: config.timeoutMs * 2,
-  reporter: [['html', { outputFolder: 'playwright-report', open: 'always' }]],
   workers: 4
 });
 
