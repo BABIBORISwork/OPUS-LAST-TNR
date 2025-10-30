@@ -14,7 +14,8 @@ async function run(command: string, args: string[]): Promise<void> {
 export default async function globalTeardown(): Promise<void> {
   try {
     await run('npx', ['allure', 'generate', '--clean', 'allure-results', '-o', 'allure-report']);
+    await run('npx', ['allure', 'open', 'allure-report']);
   } catch (error) {
-    console.warn('[Allure] Génération du rapport échouée (ignore en local si Allure non installé):', (error as Error).message);
+    console.warn('[Allure] Génération/ouverture du rapport échouée (ignore en local si Allure non installé):', (error as Error).message);
   }
 }
