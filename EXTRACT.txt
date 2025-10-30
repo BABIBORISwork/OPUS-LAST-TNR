@@ -1,0 +1,4 @@
+SIREN CTRL  - > DATE MAJ
+CLI EVA filtre sur le code nature == E, Filtrer par DAT_CREA_CLi 
+CLI ABNE EVA -> Pour la ref abo 
+CTR ABNE -> Pour les contrat

@@ -1,0 +1,46 @@
+{
+  "name": "ts-e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:all:parallel": "playwright test --workers=4",
+    "test:all:parallel:headed": "playwright test --workers=4 --headed",
+    "test:creation": "playwright test src/tests/creation-client-tunnel.tspec.ts",
+    "test:creation:headed": "playwright test src/tests/creation-client-tunnel.tspec.ts --headed",
+    "test:tunnel": "playwright test src/tests/creation-client-tunnel.tspec.ts",
+    "test:tunnel:headed": "playwright test src/tests/creation-client-tunnel.tspec.ts --headed",
+    "test:creation-particulier": "playwright test src/tests/creation-client-particulier.tspec.ts",
+    "test:creation-particulier:headed": "playwright test src/tests/creation-client-particulier.tspec.ts --headed",
+    "test:smoke": "playwright test src/tests/creation-client-tunnel.tspec.ts -g \"Smoke Tests\"",
+    "test:smoke:headed": "playwright test src/tests/creation-client-tunnel.tspec.ts -g \"Smoke Tests\" --headed",
+    "test:smoke-particulier": "playwright test src/tests/creation-client-particulier.tspec.ts -g \"Smoke Test\"",
+    "test:smoke-particulier:headed": "playwright test src/tests/creation-client-particulier.tspec.ts -g \"Smoke Test\" --headed",
+    "test:db": "playwright test src/tests/creation-client-tunnel.tspec.ts -g \"Afficher les sociétés disponibles\"",
+    "test:core:parallel": "playwright test src/tests/recherche-client.tspec.ts src/tests/creation-client-tunnel.tspec.ts src/tests/creation-client-particulier.tspec.ts",
+    "test:core:parallel:headed": "playwright test src/tests/recherche-client.tspec.ts src/tests/creation-client-tunnel.tspec.ts src/tests/creation-client-particulier.tspec.ts --headed",
+    "codegen": "playwright codegen"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.55.1",
+    "@types/node": "^24.6.2",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.2.3",
+    "eslint": "^9.36.0",
+    "prettier": "^3.6.2",
+    "prisma": "^6.16.3",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.3",
+    "better-sqlite3": "^12.4.1",
+    "playwright": "^1.56.0"
+  }
+}

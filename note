@@ -1,0 +1,48 @@
+
+Running 1 test using 1 worker
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+src\tests\Siretisation.tspec.ts:9:5 › Test de sirétisation du client
+[2025-10-29T15:04:53.310Z] [INFO] Initialisation de la colonne lastSiretisation...
+[2025-10-29T15:04:53.346Z] [INFO] Recherche d'un client professionnel éligible pour sirétisation...
+[2025-10-29T15:04:53.354Z] [INFO] Client pro éligible sélectionné pour sirétisation | {"neva":5513863,"siret":"90955913000010"}
+[2025-10-29T15:04:53.356Z] [INFO] Client pro sélectionné: NEva=5513863, SIRET=90955913000010
+[2025-10-29T15:04:53.358Z] [INFO] Navigation vers Opus et recherche du client...
+[2025-10-29T15:05:03.988Z] [INFO] Vérification de l'historique initial...
+[2025-10-29T15:05:04.094Z] [INFO] Première ligne de l'historique initial: 
+
+
+
+
+
+
+
+
+                                                                Date
+
+
+
+                                                                Utilisate...
+[2025-10-29T15:05:04.097Z] [INFO] Clic sur "Gestion des Abonnements"...
+[2025-10-29T15:05:08.848Z] [INFO] Navigation vers GCO réussie, la sirétisation devrait avoir été déclenchée
+[2025-10-29T15:05:08.851Z] [INFO] Mise à jour de lastSiretisation pour le client 5513863...
+[2025-10-29T15:05:08.859Z] [INFO] ✅ lastSiretisation mis à jour pour le client 5513863
+[2025-10-29T15:05:08.867Z] [INFO] Retour sur l'historique...
+[2025-10-29T15:05:13.697Z] [INFO] Vérification de l'ajout de l'événement de sirétisation...
+[2025-10-29T15:05:13.750Z] [INFO] Première ligne après sirétisation: 
+
+
+
+
+
+
+
+
+                                                                Date
+
+
+
+                                                                Utilisate...
+[2025-10-29T15:05:13.755Z] [INFO] Date de l'événement de sirétisation: 29/10/2025 16:05:05
+[2025-10-29T15:05:13.761Z] [INFO] ✅ L'événement de sirétisation date de 0.23 minutes, ce qui est récent
+[2025-10-29T15:05:13.770Z] [INFO] ✅ Test de sirétisation terminé avec succès
+  1 passed (26.0s)
