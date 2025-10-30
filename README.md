@@ -31,6 +31,21 @@ npm run test:headed
 npm run report:open
 ```
 
+## Allure (local)
+1) Installer les dépendances Allure (une seule fois):
+```bash
+npm i -D allure-playwright allure-commandline
+```
+2) Exécuter les tests (génère `allure-results/`):
+```bash
+npm test
+```
+3) Générer et ouvrir le rapport:
+```bash
+npm run allure:generate
+npm run allure:open
+```
+
 ## Structure du projet
 ```
 src/
@@ -46,6 +61,8 @@ playwright.config.ts       # Configuration Playwright
 - `npm test` – exécute tous les tests
 - `npm run test:headed` – exécution avec navigateur visible
 - `npm run report:open` – ouvre le rapport HTML Playwright
+- `npm run allure:generate` – génère le rapport Allure
+- `npm run allure:open` – ouvre le rapport Allure
 - `npm run lint` – lint TypeScript
 - `npm run format` – formatage Prettier
 

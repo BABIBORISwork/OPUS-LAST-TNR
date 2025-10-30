@@ -43,7 +43,6 @@ export type AppConfig = Readonly<{
   }>;
 }>;
 
-// Validation agrégée
 const errors: string[] = [];
 
 function requireEnv(name: string): string | undefined {
@@ -76,7 +75,6 @@ function requireNumber(name: string): number | undefined {
   return n;
 }
 
-// Lecture + validation
 const baseUrl = requireEnv('BASE_URL')?.trim();
 const headless = requireBoolean('HEADLESS');
 const slowMo = requireNumber('SLOWMO');

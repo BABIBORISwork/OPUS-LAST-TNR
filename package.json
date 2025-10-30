@@ -10,7 +10,9 @@
     "report:open": "playwright show-report",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "allure:generate": "allure generate --clean allure-results -o allure-report",
+    "allure:open": "allure open allure-report"
   },
   "keywords": [],
   "author": "",

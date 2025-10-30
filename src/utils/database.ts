@@ -3,8 +3,7 @@ import { config } from '../config';
 import { logger } from './logger';
 import { Formule, Option, Promo } from '../types/models';
 
-// Chargement synchrone des cas de tests depuis SQLite pour génération de tests au chargement du fichier
-// Utilisé par les tests de tunnel
+
 export function getFormulesTestCasesSync(): Array<{
   societeName: string;
   formule: Formule;

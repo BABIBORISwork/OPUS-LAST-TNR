@@ -9,6 +9,10 @@ playwright-report/
  traces/
  screenshots/
 
+# Allure artifacts
+allure-results/
+allure-report/
+
 # Builds and caches
 /dist/
 /.cache/

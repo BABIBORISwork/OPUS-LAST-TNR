@@ -14,7 +14,6 @@ export class RetryManager {
     delayMs: config.retry.delayMs,
     backoffMultiplier: config.retry.backoffMultiplier,
     retryCondition: (error: any) => {
-      // Retry sur les erreurs de timeout, réseau, et éléments non trouvés
       const retryableErrors = [
         'TimeoutError',
         'NetworkError',
@@ -53,7 +52,6 @@ export class RetryManager {
       } catch (error) {
         lastError = error;
         
-        // Vérifier si on doit retry
         if (attempt === finalOptions.maxAttempts || 
             !finalOptions.retryCondition!(error)) {
           logger.error(`❌ Échec définitif après ${attempt} tentatives: ${operationName}`, { error: error.message });
@@ -62,7 +60,6 @@ export class RetryManager {
 
         logger.logRetry(operationName, attempt, finalOptions.maxAttempts!, error.message);
         
-        // Attendre avant le prochain essai
         if (attempt < finalOptions.maxAttempts!) {
           await new Promise(resolve => setTimeout(resolve, delay));
           delay *= finalOptions.backoffMultiplier!;

@@ -49,7 +49,6 @@ export class Logger {
 
     const formattedMessage = this.formatMessage(level, message, context);
     
-    // Console output
     switch (level) {
       case LogLevel.DEBUG:
         console.debug(formattedMessage);
@@ -65,7 +64,6 @@ export class Logger {
         break;
     }
 
-    // File output
     if (this.logFile) {
       try {
         fs.appendFileSync(this.logFile, formattedMessage + '\n');

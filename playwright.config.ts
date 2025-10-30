@@ -14,7 +14,8 @@ export default defineConfig({
   reporter: [
     ['list'],
     ['html', { outputFolder: 'playwright-report', open: 'never' }],
-    ['junit', { outputFile: 'reports/junit/results.xml' }]
+    ['junit', { outputFile: 'reports/junit/results.xml' }],
+    ['allure-playwright', { outputFolder: 'allure-results', detail: true, suiteTitle: true }]
   ],
   projects: [
     { name: 'chromium', use: { browserName: 'chromium' } },
@@ -32,6 +33,7 @@ export default defineConfig({
     video: 'on-first-retry',
     outputDir: 'test-results'
   },
+  globalTeardown: './src/global-teardown.ts',
   workers: 4
 });
 

@@ -20,7 +20,6 @@ export interface DonneesClientParticulier {
 export class CreationClientParticulierPage {
   constructor(private readonly page: Page) {}
 
-  // Éléments de la page
   private get boutonCreationClient(): Locator {
     return this.page.locator('#btnCreationClient_CD');
   }
@@ -81,7 +80,6 @@ export class CreationClientParticulierPage {
     return this.page.locator('#btnValiderCreationClient_CD');
   }
 
-  // Méthodes de navigation
   public async ouvrirCreationClientDepuisOpus(): Promise<void> {
     logger.debug('Ouverture de la création de client depuis OPUS');
     await RetryManager.executeWithRetry(

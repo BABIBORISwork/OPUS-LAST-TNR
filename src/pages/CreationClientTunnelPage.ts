@@ -8,7 +8,6 @@ import { Formule, Option, Promo } from '../types/models';
 export class CreationClientTunnelPage {
   constructor(private readonly page: Page) {}
 
-  // Éléments de la page
   private get boutonCreationClient(): Locator {
     return this.page.locator('#btnCreationClient_CD');
   }

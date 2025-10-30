@@ -21,7 +21,6 @@ export class ScreenshotManager {
       return null;
     }
 
-    // Vérifier si on doit prendre un screenshot selon le type
     if (type === 'success' && !config.screenshots.onSuccess) {
       return null;
     }
@@ -84,7 +83,7 @@ export class ScreenshotManager {
 
       const files = fs.readdirSync(screenshotDir);
       const now = Date.now();
-      const maxAge = maxAgeDays * 24 * 60 * 60 * 1000; // Convertir en millisecondes
+      const maxAge = maxAgeDays * 24 * 60 * 60 * 1000; 
 
       let deletedCount = 0;
       for (const file of files) {

@@ -42,7 +42,6 @@ export async function getFormuleById(id: number): Promise<Formule | null> {
       return null;
     }
     
-    // Récupérer options et promos
     const options = db.prepare('SELECT * FROM Options WHERE FormuleId = ?').all(id) as Option[];
     const promos = db.prepare('SELECT * FROM Promos WHERE FormuleId = ?').all(id) as Promo[];
     
@@ -73,7 +72,6 @@ export async function getClientProPourSiretisation(): Promise<JDD> {
   const db = openDbForWrite();
   
   try {
-    // Calculer la date limite (24h avant maintenant)
     const dateLimite = new Date();
     dateLimite.setHours(dateLimite.getHours() - 24);
     
