@@ -25,7 +25,7 @@ export default defineConfig({
     baseURL: config.baseUrl,
     headless: config.headless,
     launchOptions: { slowMo: config.slowMo },
-    navigationTimeout: config.timeoutMs,
+    navigationTimeout: config.navigationTimeoutMs,
     actionTimeout: config.timeoutMs,
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',

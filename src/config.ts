@@ -1,35 +1,133 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-export const config = {
-  baseUrl: process.env.BASE_URL || 'https://opusrec.vinci-autoroutes.com/GRC/Error/SiteCommercial#',
-  headless: (process.env.HEADLESS || 'false').toLowerCase() === 'true',
-  slowMo: Number(process.env.SLOWMO || 0),
-  timeoutMs: Number(process.env.TIMEOUT || 30000),
-  navigationTimeoutMs: Number(process.env.NAVIGATION_TIMEOUT || 60000),
-  screenshots: {
-    enabled: (process.env.SCREENSHOTS_ENABLED || 'false').toLowerCase() === 'true',
-    path: process.env.SCREENSHOTS_PATH || 'screenshots',
-    onFailure: (process.env.SCREENSHOTS_ON_FAILURE || 'true').toLowerCase() === 'true',
-    onSuccess: (process.env.SCREENSHOTS_ON_SUCCESS || 'false').toLowerCase() === 'true'
-  },
-  retry: {
-    maxAttempts: Number(process.env.RETRY_MAX_ATTEMPTS || 3),
-    delayMs: Number(process.env.RETRY_DELAY_MS || 1000),
-    backoffMultiplier: Number(process.env.RETRY_BACKOFF_MULTIPLIER || 2)
-  },
-  logging: {
-    enabled: (process.env.LOGGING_ENABLED || 'true').toLowerCase() === 'true',
-    level: process.env.LOG_LEVEL || 'INFO',
-    directory: process.env.LOG_DIRECTORY || 'logs'
-  },
-  testData: {
-    defaultSociete: process.env.DEFAULT_SOCIETE || 'TO DO',
-    defaultFormule: process.env.DEFAULT_FORMULE || 'TO DO'
-  },
-  database: {
-    path: process.env.DATABASE_PATH || 'Data/tnr.db'
+function isBooleanLike(value: string): boolean {
+  const v = value.trim().toLowerCase();
+  return ['true', '1', 'yes', 'on', 'false', '0', 'no', 'off'].includes(v);
+}
+
+function toBoolean(value: string): boolean {
+  const v = value.trim().toLowerCase();
+  return ['true', '1', 'yes', 'on'].includes(v);
+}
+
+function toNumber(value: string): number | null {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+
+export type AppConfig = Readonly<{
+  baseUrl: string;
+  headless: boolean;
+  slowMo: number;
+  timeoutMs: number;
+  navigationTimeoutMs: number;
+  screenshots: Readonly<{
+    enabled: boolean;
+    path: string;
+    onFailure: boolean;
+    onSuccess: boolean;
+  }>;
+  retry: Readonly<{
+    maxAttempts: number;
+    delayMs: number;
+    backoffMultiplier: number;
+  }>;
+  logging: Readonly<{
+    enabled: boolean;
+    level: string;
+    directory: string;
+  }>;
+  database: Readonly<{
+    path: string;
+  }>;
+}>;
+
+// Validation agrégée
+const errors: string[] = [];
+
+function requireEnv(name: string): string | undefined {
+  const value = process.env[name];
+  if (value === undefined || value.trim() === '') {
+    errors.push(`Missing ${name}`);
+    return undefined;
   }
-};
+  return value;
+}
+
+function requireBoolean(name: string): boolean | undefined {
+  const raw = requireEnv(name);
+  if (raw === undefined) return undefined;
+  if (!isBooleanLike(raw)) {
+    errors.push(`Invalid ${name}: expected boolean-like (true/false)`);
+    return undefined;
+  }
+  return toBoolean(raw);
+}
+
+function requireNumber(name: string): number | undefined {
+  const raw = requireEnv(name);
+  if (raw === undefined) return undefined;
+  const n = toNumber(raw);
+  if (n === null) {
+    errors.push(`Invalid ${name}: expected finite number`);
+    return undefined;
+  }
+  return n;
+}
+
+// Lecture + validation
+const baseUrl = requireEnv('BASE_URL')?.trim();
+const headless = requireBoolean('HEADLESS');
+const slowMo = requireNumber('SLOWMO');
+const timeoutMs = requireNumber('TIMEOUT');
+const navigationTimeoutMs = requireNumber('NAVIGATION_TIMEOUT');
+
+const screenshotsEnabled = requireBoolean('SCREENSHOTS_ENABLED');
+const screenshotsPath = requireEnv('SCREENSHOTS_PATH');
+const screenshotsOnFailure = requireBoolean('SCREENSHOTS_ON_FAILURE');
+const screenshotsOnSuccess = requireBoolean('SCREENSHOTS_ON_SUCCESS');
+
+const retryMaxAttempts = requireNumber('RETRY_MAX_ATTEMPTS');
+const retryDelayMs = requireNumber('RETRY_DELAY_MS');
+const retryBackoffMultiplier = requireNumber('RETRY_BACKOFF_MULTIPLIER');
+
+const loggingEnabled = requireBoolean('LOGGING_ENABLED');
+const logLevel = requireEnv('LOG_LEVEL');
+const logDirectory = requireEnv('LOG_DIRECTORY');
+
+const databasePath = requireEnv('DATABASE_PATH');
+
+if (errors.length > 0) {
+  const message = ['Configuration error:', ...errors.map(e => ` - ${e}`)].join('\n');
+  throw new Error(message);
+}
+
+export const config: AppConfig = Object.freeze({
+  baseUrl: baseUrl!,
+  headless: headless!,
+  slowMo: slowMo!,
+  timeoutMs: timeoutMs!,
+  navigationTimeoutMs: navigationTimeoutMs!,
+  screenshots: Object.freeze({
+    enabled: screenshotsEnabled!,
+    path: screenshotsPath!,
+    onFailure: screenshotsOnFailure!,
+    onSuccess: screenshotsOnSuccess!
+  }),
+  retry: Object.freeze({
+    maxAttempts: retryMaxAttempts!,
+    delayMs: retryDelayMs!,
+    backoffMultiplier: retryBackoffMultiplier!
+  }),
+  logging: Object.freeze({
+    enabled: loggingEnabled!,
+    level: logLevel!,
+    directory: logDirectory!
+  }),
+  database: Object.freeze({
+    path: databasePath!
+  })
+});
 
 
